@@ -11,15 +11,25 @@ class App extends Component {
     loading: false
   };
 
-  async componentDidMount() {
+  //If we want to see some users before search it should be uncomment
+  // async componentDidMount() {
+  //   this.setState({ loading: true });
+
+  //   const res = await axios.get(
+  //     `https://api.github.com/users?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
+  //   );
+  //   this.setState({ users: res.data, loading: false });
+  // }
+
+  //Search github users
+  searchUsers = async text => {
     this.setState({ loading: true });
 
     const res = await axios.get(
-      `https://api.github.com/users?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
+      `https://api.github.com/search/users?q=${text}&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
     );
-    this.setState({ users: res.data, loading: false });
-    console.log(res.data);
-  }
+    this.setState({ users: res.data.items, loading: false });
+  };
 
   render() {
     const NavBarTitle = 'GitHub Finder';
@@ -27,7 +37,7 @@ class App extends Component {
       <div className='App'>
         <Navbar title={NavBarTitle} icon='fab fa-github' />
         <div className='container'>
-          <Search />
+          <Search searchUsers={this.searchUsers} />
           <Users loading={this.state.loading} users={this.state.users} />
         </div>
       </div>
