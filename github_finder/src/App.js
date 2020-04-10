@@ -8,7 +8,7 @@ import axios from 'axios';
 class App extends Component {
   state = {
     users: [],
-    loading: false
+    loading: false,
   };
 
   //If we want to see some users before search it should be uncomment
@@ -22,7 +22,7 @@ class App extends Component {
   // }
 
   //Search github users
-  searchUsers = async text => {
+  searchUsers = async (text) => {
     this.setState({ loading: true });
 
     const res = await axios.get(
@@ -30,15 +30,24 @@ class App extends Component {
     );
     this.setState({ users: res.data.items, loading: false });
   };
+  //Clear users
+  clearUsers = () => {
+    this.setState({ users: [], loading: false });
+  };
 
   render() {
+    const { users, loading } = this.state;
     const NavBarTitle = 'GitHub Finder';
     return (
       <div className='App'>
         <Navbar title={NavBarTitle} icon='fab fa-github' />
         <div className='container'>
-          <Search searchUsers={this.searchUsers} />
-          <Users loading={this.state.loading} users={this.state.users} />
+          <Search
+            searchUsers={this.searchUsers}
+            clearUsers={this.clearUsers}
+            showClear={users.length > 0 ? true : false}
+          />
+          <Users loading={loading} users={users} />
         </div>
       </div>
     );
